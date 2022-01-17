@@ -1,3 +1,3 @@
-export function test() {
-  console.log('test');
-}
+export { ssg } from './ssg';
+export { pages } from './pages';
+export { mdx } from './mdx';
