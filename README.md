@@ -5,14 +5,7 @@ Plugins for markdown page based static site generator.
 ## Usage
 
 ```
-pnpm add @tianwenh/vite-plugin-ssgpage
+pnpm add -D @tianwenh/vite-plugin-ssgpage
 ```
 
-TODO: add examples
-
-## Dev
-
-```
-pnpm i
-npm run dev
-```
+See `examples/` for instructions and clone to start.
