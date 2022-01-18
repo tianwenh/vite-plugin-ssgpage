@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import { Frontmatter, PageMetadata } from '@pages';
-import { slugify } from '@tianwenh/utils';
+import { slugify } from '@tianwenh/utils/string';
 
 const MODULE_NAME = '@pages';
 

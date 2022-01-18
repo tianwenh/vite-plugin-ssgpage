@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@mdx-js/rollup': ^2.0.0-rc.2
   '@tianwenh/eslint-config': ^0.1.1
-  '@tianwenh/utils': ^0.1.0
+  '@tianwenh/utils': ^0.2.1
   '@types/fs-extra': ^9.0.13
   '@types/node': ^17.0.8
   '@types/react': ^17.0.38
@@ -28,7 +28,7 @@ specifiers:
 
 dependencies:
   '@mdx-js/rollup': 2.0.0-rc.2_rollup@2.64.0
-  '@tianwenh/utils': 0.1.0
+  '@tianwenh/utils': 0.2.1
   '@types/fs-extra': 9.0.13
   '@types/node': 17.0.8
   '@vitejs/plugin-react': 1.1.4
@@ -427,8 +427,8 @@ packages:
       - typescript
     dev: true
 
-  /@tianwenh/utils/0.1.0:
-    resolution: {integrity: sha512-b0IR9iTZclYPg1KxQs3xhVgMyhjedlE3qzdFiwQBJqtcSwjt/b1Ip+rBU81m764qBmh4c8BVv2HnmYC0g+yy2Q==}
+  /@tianwenh/utils/0.2.1:
+    resolution: {integrity: sha512-ttNyIB9L/HEQBpRA0ryPAmOZP0/oTaSbJGUp/AzUysEKOk2ehNsoanHes65JCrbNH8FCfWH2BSgKbRsAn3BDWA==}
     dev: false
 
   /@types/acorn/4.0.6:
