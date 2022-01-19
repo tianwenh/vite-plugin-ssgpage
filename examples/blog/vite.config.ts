@@ -2,10 +2,6 @@ import { defineConfig } from 'vite';
 import path from 'path';
 import { pages, mdx, ssg } from '@tianwenh/vite-plugin-ssgpage';
 
-const distPath = path.resolve('./dist');
-const templatePath = path.resolve(distPath, 'index.html');
-const serverPath = path.resolve('./theme/entry-server.tsx');
-
 export default defineConfig({
   plugins: [
     mdx(),
@@ -18,9 +14,9 @@ export default defineConfig({
       ],
     }),
     ssg({
-      distPath,
-      templatePath,
-      serverPath,
+      distPath: path.resolve('./dist'),
+      templatePath: path.resolve('./dist/index.html'),
+      serverPath: path.resolve('./theme/entry-server.tsx'),
       entryRoutes: ['/', '/404'],
     }),
   ],
