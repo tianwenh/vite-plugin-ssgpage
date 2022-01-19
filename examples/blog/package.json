@@ -8,7 +8,7 @@
     "dev": "vite",
     "prebuild": "npm run clean && tsc && npm run lint",
     "build:client": "npm run prebuild && vite build",
-    "build": "npm run prebuild && vite build --mode ssg",
+    "build": "vite build --mode ssg",
     "serve": "vite preview",
     "deploy": "npm run build && gh-pages -d dist"
   },

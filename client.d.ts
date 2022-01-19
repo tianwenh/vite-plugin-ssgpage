@@ -20,7 +20,14 @@ declare module '@pages' {
       >;
     }>;
   }
-
-  declare const metadata: PageMetadata[];
+  const metadata: PageMetadata[];
   export default metadata;
+}
+
+declare module '@pages/query' {
+  export interface PageQueryData {
+    slug: string;
+    content: string;
+  }
+  export const pageQuerydata: PageQueryData[];
 }

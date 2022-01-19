@@ -33,7 +33,12 @@ const MdxLink: React.FC<{ href: string; title: string }> = (props) => {
   if (isExternal) {
     return <a target="_blank" {...props} />;
   }
+  // Drop wiki link extension.
   const dropExtension = props.href.replace(/\.mdx?/, '');
+  // <Link /> breaks header anchor.
+  if (dropExtension.startsWith('#')) {
+    return <a {...props} />;
+  }
   return <Link {...props} to={dropExtension}></Link>;
 };
 const MDX_COMPONENTS = {
