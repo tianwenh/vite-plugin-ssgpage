@@ -22,6 +22,7 @@ function getNextRoutes(ssrHtml: string): string[] {
 export async function prerender(options: SsrOptions) {
   const vite = await createServer({
     server: { middlewareMode: 'ssr' },
+    mode: 'production',
   });
   const { render } = await vite.ssrLoadModule(options.serverPath);
   const template = await fs.readFile(options.templatePath, 'utf-8');
@@ -58,7 +59,7 @@ export function ssg(options: SsrOptions): Plugin {
     name: 'ssg',
     enforce: 'post',
     apply(config, { command }) {
-      return command === 'build' && config.mode === 'ssg';
+      return command === 'build' && !process.env['NO_SSG'];
     },
     async closeBundle() {
       await prerender(options);
