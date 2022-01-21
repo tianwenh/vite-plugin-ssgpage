@@ -6,6 +6,7 @@ import matter from 'gray-matter';
 import type { Frontmatter, PageMetadata } from '@pages';
 import type { PageQueryData } from '@pages/query';
 import { slugify } from '@tianwenh/utils/string';
+import { pick } from '@tianwenh/utils/object';
 
 const MODULE_NAME = '@pages';
 const QUERY_MODULE_NAME = `${MODULE_NAME}/query`;
@@ -73,13 +74,8 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
 // generate script that exports list of page metadata
 async function generatePageMetadata(options: PageOptions): Promise<string> {
   const ms = await loadPages(options);
-  // TODO: use pick helper
   const metadata: Omit<PageMetadata, 'component'>[] = ms.map((m) => {
-    return {
-      filepath: m.filepath,
-      slug: m.slug,
-      frontmatter: m.frontmatter,
-    };
+    return pick(m, 'filepath', 'slug', 'frontmatter');
   });
   const metadataWithComponent = metadata
     .map((m, i) => `{"component": Component${i},${JSON.stringify(m).slice(1)}`)
@@ -99,13 +95,7 @@ export default [${metadataWithComponent}];
 // generate script that exports list of page raw conent for search
 async function generatePageQuerydata(options: PageOptions): Promise<string> {
   const ms = await loadPages(options);
-  // TODO: use pick helper
-  const metadata: PageQueryData[] = ms.map((m) => {
-    return {
-      slug: m.slug,
-      content: m.content,
-    };
-  });
+  const metadata: PageQueryData[] = ms.map((m) => pick(m, 'slug', 'content'));
 
   console.log(`${QUERY_MODULE_NAME} loaded: ${metadata.length}`);
 
