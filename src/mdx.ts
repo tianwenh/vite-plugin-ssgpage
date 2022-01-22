@@ -29,7 +29,6 @@ export function mdx(): PluginOption[] {
           },
         ],
       ],
-      jsxRuntime: 'classic',
     }),
   ];
 }

@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { useScrollToTop, useScrollToAnchor } from '@tianwenh/utils/react/hooks';
 import { pages } from './pageData';
 // Code highlighting
 import 'prismjs/themes/prism.css';
@@ -36,22 +37,4 @@ export default function App() {
       </Route>
     </Routes>
   );
-}
-
-// Scroll to top when navigating to new pages
-function useScrollToTop() {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-}
-
-function useScrollToAnchor() {
-  const { hash } = useLocation();
-  useEffect(() => {
-    const anchor = document.getElementById(hash.slice(1));
-    anchor?.scrollIntoView({ behavior: 'smooth' });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 }

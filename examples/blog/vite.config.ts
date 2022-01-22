@@ -3,6 +3,12 @@ import path from 'path';
 import { pages, mdx, ssg } from '@tianwenh/vite-plugin-ssgpage';
 
 export default defineConfig({
+  // https://github.com/mdx-js/mdx/discussions/1794
+  resolve: {
+    alias: {
+      'react/jsx-runtime': 'react/jsx-runtime.js',
+    },
+  },
   plugins: [
     mdx(),
     pages({

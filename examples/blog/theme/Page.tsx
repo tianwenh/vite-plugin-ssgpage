@@ -1,6 +1,7 @@
 import React from 'react';
 import type { PageMetadata } from '@pages';
 import { Link } from 'react-router-dom';
+import { MdxLink } from '@tianwenh/utils/react/Mdx';
 import { Tag } from './Tag';
 
 interface Props {
@@ -28,19 +29,6 @@ export const PageMeta: React.FC<Props> = (props) => {
   );
 };
 
-const MdxLink: React.FC<{ href: string; title: string }> = (props) => {
-  const isExternal = /^https?:\/\//.test(props.href);
-  if (isExternal) {
-    return <a target="_blank" {...props} />;
-  }
-  // Drop wiki link extension.
-  const dropExtension = props.href.replace(/\.mdx?/, '');
-  // <Link /> breaks header anchor.
-  if (dropExtension.startsWith('#')) {
-    return <a {...props} />;
-  }
-  return <Link {...props} to={dropExtension}></Link>;
-};
 const MDX_COMPONENTS = {
   a: MdxLink,
 };
