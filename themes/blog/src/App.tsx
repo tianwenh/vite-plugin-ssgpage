@@ -1,20 +1,27 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useScrollToTop, useScrollToAnchor } from '@tianwenh/utils/react/hooks';
-import { pages } from './pageData';
+import { restoreTheme } from '@tianwenh/utils/theme';
+
 // Code highlighting
 import 'prismjs/themes/prism.css';
 import 'normalize.css';
 import 'katex/dist/katex.css';
 import './App.css';
 
+import { pages } from './pageData';
 import { Layout } from './Layout';
 import { Pages } from './Pages';
 import { Page } from './Page';
 import { Tags } from './Tags';
 import { NotFound } from './NotFound';
 
-export default function App() {
+// Skip SSR
+if (typeof window !== 'undefined') {
+  restoreTheme();
+}
+
+export function App() {
   useScrollToTop();
   useScrollToAnchor();
 

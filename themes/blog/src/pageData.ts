@@ -1,3 +1,4 @@
+import type {} from '@tianwenh/vite-plugin-ssgpage';
 import unsortedPages from '@pages';
 import { slugify } from '@tianwenh/utils/string';
 import { groupBy } from '@tianwenh/utils/array';

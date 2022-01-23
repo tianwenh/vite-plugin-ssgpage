@@ -20,7 +20,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "npm run build",
     "clean": "rm -rf ./dist",
     "build": "tsup src/index.ts --format esm --dts --clean",
     "dev": "npm run build -- --watch",
@@ -36,7 +36,6 @@
     "vite": "^2.7.13"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.38",
     "react": "^17.0.2",
     "vite": "^2.7.13"
   },
