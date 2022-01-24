@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Tag } from './Tag';
-import { Pages } from './Pages';
-import type { PageMetadata } from '@pages';
+import type { PageMetadata } from '@tianwenh/vite-plugin-ssgpage';
 import { slugify } from '@tianwenh/utils/string';
 import { groupBy } from '@tianwenh/utils/array';
+
+import { Tag } from './Tag';
+import { Pages } from './Pages';
 
 const matchedPages = (
   pagesByTagSlug: Record<string, PageMetadata[]>,

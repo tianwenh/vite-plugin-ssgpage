@@ -1,15 +1,36 @@
+import type { ComponentType } from 'react';
 import type { Plugin } from 'vite';
 import fg from 'fast-glob';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
-import type { Frontmatter, PageMetadata } from '@pages';
-import type { PageQueryData } from '@pages/query';
 import { slugify } from '@tianwenh/utils/string';
 import { pick } from '@tianwenh/utils/object';
 
-const MODULE_NAME = '@pages';
-const QUERY_MODULE_NAME = `${MODULE_NAME}/query`;
+export interface Frontmatter {
+  title: string;
+  subtitle: string;
+  date: string;
+  tags: string[];
+  only: boolean;
+  hide: boolean;
+  [key: string]: unknown;
+}
+export interface PageMetadata {
+  filepath: string;
+  slug: string;
+  frontmatter: Frontmatter;
+  component: ComponentType<{
+    components: Partial<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Record<keyof HTMLElementTagNameMap, ComponentType<any>>
+    >;
+  }>;
+}
+export interface PageQueryData {
+  slug: string;
+  content: string;
+}
 
 export interface PageGlob {
   basepath: string;
@@ -19,7 +40,10 @@ export interface PageOptions {
   globs: PageGlob[];
 }
 
-export function slugifyFilepath(filepath: string, basepath: string): string {
+const MODULE_NAME = '@pages';
+const QUERY_MODULE_NAME = `${MODULE_NAME}/query`;
+
+function slugifyFilepath(filepath: string, basepath: string): string {
   const subpath = filepath.replace(basepath, '');
   const parsed = path.parse(subpath);
   // Filename or its dir name if filename is just 'index'.
@@ -100,7 +124,7 @@ async function generatePageQuerydata(options: PageOptions): Promise<string> {
   console.log(`${QUERY_MODULE_NAME} loaded: ${metadata.length}`);
 
   return `
-  export const pageQuerydata = ${JSON.stringify(metadata)};
+  export default ${JSON.stringify(metadata)};
     `;
 }
 

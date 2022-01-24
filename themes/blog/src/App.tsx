@@ -2,9 +2,7 @@ import React, { useMemo } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useScrollToTop, useScrollToAnchor } from '@tianwenh/utils/react/hooks';
 import { restoreTheme } from '@tianwenh/utils/theme';
-import type { PageMetadata } from '@pages';
-// TODO: remove side effect timport
-import type {} from '@tianwenh/vite-plugin-ssgpage';
+import type { PageMetadata } from '@tianwenh/vite-plugin-ssgpage';
 
 import './App.css';
 

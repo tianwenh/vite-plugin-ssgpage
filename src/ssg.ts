@@ -19,7 +19,7 @@ function getNextRoutes(ssrHtml: string): string[] {
 }
 
 // Pre-render the app into static HTML.
-export async function prerender(options: SsrOptions) {
+async function prerender(options: SsrOptions) {
   const vite = await createServer({
     server: { middlewareMode: 'ssr' },
     mode: 'production',

@@ -1,7 +1,8 @@
 import React from 'react';
-import type { PageMetadata } from '@pages';
 import { Link } from 'react-router-dom';
 import { MdxLink } from '@tianwenh/utils/react/Mdx';
+import type { PageMetadata } from '@tianwenh/vite-plugin-ssgpage';
+
 import { Tag } from './Tag';
 
 interface Props {

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { PageMetadata } from '@pages';
+import type { PageMetadata } from '@tianwenh/vite-plugin-ssgpage';
 
 import { PageMeta } from './Page';
 
