@@ -1,6 +1,6 @@
 {
   "name": "@tianwenh/ssgpage-theme-blog",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Blog theme for vite ssgpage plugin",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint .",
     "clean": "rm -rf ./dist",
-    "build": "tsup src/index.ts --external @pages --format esm --dts --clean",
+    "build": "tsup src/index.ts --format esm --dts --clean",
     "dev": "npm run build -- --watch"
   },
   "dependencies": {
