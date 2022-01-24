@@ -1,7 +1,7 @@
 {
-  "name": "@tianwenh/ssgpage-theme-blog",
-  "version": "0.2.4",
-  "description": "Blog theme for vite ssgpage plugin",
+  "name": "@tianwenh/ssgpage-theme-wiki",
+  "version": "0.1.0",
+  "description": "Wiki theme for vite ssgpage plugin",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tianwenh/vite-plugin-ssgpage.git"

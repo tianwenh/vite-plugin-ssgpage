@@ -17,9 +17,9 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
+// TODO:
 interface Props {
   pages: PageMetadata[];
-  home: string;
 }
 export const App: React.FC<Props> = (props) => {
   const pages = useMemo(() => {
@@ -35,7 +35,7 @@ export const App: React.FC<Props> = (props) => {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout home={props.home} />}>
+      <Route path="/" element={<Layout />}>
         <Route index element={<Pages pages={pages} />}></Route>
         <Route path="/tags" element={<Tags pages={pages} />}></Route>
         <Route path="/tags/:tagSlug" element={<Tags pages={pages} />}></Route>

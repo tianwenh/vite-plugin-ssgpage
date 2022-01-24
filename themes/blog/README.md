@@ -1,7 +1,7 @@
 # Blog theme
 
 ```
-pnpm add @tianwenh/vite-plugin-ssgpage/themes/blog
+pnpm add @tianwenh/ssgpage-theme-blog
 ```
 
 ```ts
