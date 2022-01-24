@@ -6,10 +6,6 @@ import type { PageMetadata } from '@pages';
 // TODO: remove side effect timport
 import type {} from '@tianwenh/vite-plugin-ssgpage';
 
-// Code highlighting
-import 'prismjs/themes/prism.css';
-import 'normalize.css';
-import 'katex/dist/katex.css';
 import './App.css';
 
 import { Layout } from './Layout';
