@@ -2,7 +2,10 @@ import React, { useMemo } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useScrollToTop, useScrollToAnchor } from '@tianwenh/utils/react/hooks';
 import { restoreTheme } from '@tianwenh/utils/theme';
-import type { PageMetadata } from '@tianwenh/vite-plugin-ssgpage';
+import type {
+  PageMetadata,
+  PageQueryData,
+} from '@tianwenh/vite-plugin-ssgpage';
 
 import './App.css';
 
@@ -17,11 +20,16 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
-// TODO:
+// TODO: implement loadPageQuery for search
 interface Props {
   pages: PageMetadata[];
+  home: string;
+  loadPageQuery?: () => Promise<PageQueryData[]>;
 }
 export const App: React.FC<Props> = (props) => {
+  props.loadPageQuery?.().then((v) => {
+    console.log('???', v, props.pages);
+  });
   const pages = useMemo(() => {
     return props.pages.sort(
       (a, b) =>
@@ -35,7 +43,7 @@ export const App: React.FC<Props> = (props) => {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<Layout home={props.home} />}>
         <Route index element={<Pages pages={pages} />}></Route>
         <Route path="/tags" element={<Tags pages={pages} />}></Route>
         <Route path="/tags/:tagSlug" element={<Tags pages={pages} />}></Route>

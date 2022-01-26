@@ -8,7 +8,7 @@ export function render(location: string) {
   return ReactDOMServer.renderToString(
     <React.StrictMode>
       <StaticRouter location={location}>
-        <App pages={pages} />
+        <App pages={pages} home="HTWiki" />
       </StaticRouter>
     </React.StrictMode>
   );

@@ -6,6 +6,7 @@
   --width-xl: 36rem;
   --width-2xl: 42rem;
   --width-3xl: 48rem;
+  --width-10xl: 90rem;
   --width-full: 100%;
 
   --spacing-0: 0;
@@ -36,6 +37,7 @@
 
   --fontSize-root: 16px;
   --fontSizeEm-0: 0.9em;
+  --fontSizeEm-1: 1em;
   --fontSize-0: 0.9rem;
   --fontSize-1: 1rem;
   --fontSize-2: 1.2rem;
@@ -50,6 +52,7 @@
   --color-text: #2e353f;
   --color-text-light: #57606a;
   --color-background: #ffffff;
+  --color-background-secondary: #fcfcfc;
   --color-border: #00000033;
   --color-shadow: #2b2b2b1f;
 }
@@ -61,6 +64,7 @@
   --color-text: #eeeeeee6;
   --color-text-light: #aabbd8;
   --color-background: #222222;
+  --color-background-secondary: #232323;
   --color-border: #ffffff33;
   --color-shadow: #fafafa1f;
 }
@@ -177,7 +181,6 @@ a.tag-active {
 }
 
 /* Markdown head anchor */
-
 h1:hover .header-anchor,
 h1:focus .header-anchor,
 h2:hover .header-anchor,
@@ -202,13 +205,174 @@ a.header-anchor {
 
 /* Theme custom */
 .layout-container {
-  margin: var(--spacing-0) auto;
-  max-width: var(--width-3xl);
-  padding: var(--spacing-5);
+  display: flex;
+  margin: auto;
+  max-width: var(--width-10xl);
 }
 
 .layout-head {
+  display: flex;
+  align-items: center;
+  margin-top: var(--spacing-0);
   margin-bottom: var(--spacing-10);
+}
+
+.main-container {
+  order: 2;
+  margin: var(--spacing-0) auto;
+  max-width: var(--width-3xl);
+  padding: var(--spacing-10) var(--spacing-5);
+  width: var(--width-full);
+  transition: transform 200ms linear;
+}
+
+.aside-container {
+  order: 1;
+  transform: translateX(-100%);
+  position: fixed;
+  top: var(--spacing-0);
+  max-height: 100vh;
+  min-width: var(--width-xs);
+  width: var(--width-xs);
+  padding: var(--spacing-10) var(--spacing-5);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background-secondary);
+  box-shadow: 0 1px 1px 1px var(--color-shadow);
+  transition: transform 200ms linear;
+}
+
+.aside-container:hover {
+  box-shadow: 0 1px 5px 2px var(--color-shadow);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.aside-container.open {
+  transform: none;
+  width: 100%;
+}
+
+@media (min-width: 56em) {
+  .aside-container {
+    transform: none;
+    position: sticky;
+  }
+
+  .main-container .layout-head {
+    display: none;
+  }
+
+  .close-icon {
+    display: none;
+  }
+}
+
+.aside-container .layout-head {
+  justify-content: space-between;
+  margin-bottom: var(--spacing-5);
+}
+
+.aside-content {
+  overflow: auto;
+}
+
+.aside-content::-webkit-scrollbar {
+  width: var(--spacing-2);
+}
+
+.aside-content::-webkit-scrollbar-thumb {
+  background-color: var(--color-text-light);
+  border-radius: var(--spacing-1);
+}
+
+.aside-content ul,
+.aside-content ol,
+.aside-content li {
+  list-style: none;
+  margin: var(--spacing-3) 0;
+}
+
+.aside-content li > ul {
+  padding-left: var(--spacing-4);
+  border-left: 1px solid var(--color-border);
+}
+
+.aside-content a {
+  color: var(--color-text);
+}
+
+.aside-content a.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aside-content a.arrow::after {
+  content: '';
+  display: inline-block;
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  border-bottom: 3px solid currentColor;
+  border-left: 3px solid currentColor;
+  transform: rotate(45deg);
+  margin-right: var(--spacing-2);
+}
+
+.aside-content a.arrow.open::after {
+  transform: rotate(-45deg);
+}
+
+.aside-content a.active,
+.aside-content a:hover {
+  color: var(--color-primary);
+}
+
+.svg-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.svg-button svg {
+  display: inline-block;
+}
+
+svg {
+  color: var(--color-text);
+}
+
+.burger-icon {
+  margin-right: var(--spacing-4);
+}
+
+.dark-toggle {
+  margin-left: var(--spacing-4);
+  cursor: pointer;
+  user-select: none;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-6);
+  transition: 0.3s ease-in-out;
+}
+
+.search-bar:focus-within,
+.search-bar:hover {
+  border-bottom: 3px solid var(--color-title);
+  margin-bottom: calc(var(--spacing-6) - 2px);
+}
+
+.search-input {
+  padding: var(--spacing-3);
+  border: 0;
+  outline: none;
+  background-color: var(--color-background-secondary);
+  caret-color: var(--color-text);
 }
 
 .page-title {
@@ -257,10 +421,4 @@ img {
 
 .tags {
   margin-bottom: var(--spacing-6);
-}
-
-.dark-toggle {
-  cursor: pointer;
-  float: right;
-  user-select: none;
 }
