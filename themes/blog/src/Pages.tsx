@@ -13,7 +13,7 @@ export const Pages: React.FC<Props> = (props) => {
     <>
       {props.pages.map((page) => {
         return (
-          <article key={page.slug} className="card pages-card">
+          <article key={page.routepath} className="card pages-card">
             <PageMeta page={page} />
           </article>
         );

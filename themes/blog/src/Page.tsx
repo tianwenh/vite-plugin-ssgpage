@@ -15,7 +15,9 @@ export const PageMeta: React.FC<Props> = (props) => {
   return (
     <>
       <h2 className="page-title">
-        <Link to={`/${props.page.slug}`}>{props.page.frontmatter.title}</Link>
+        <Link to={`/${props.page.routepath}`}>
+          {props.page.frontmatter.title}
+        </Link>
       </h2>
       <p className="page-subtitle">{props.page.frontmatter.subtitle}</p>
       <small>

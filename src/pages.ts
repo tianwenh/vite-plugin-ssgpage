@@ -4,7 +4,6 @@ import fg from 'fast-glob';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
-import { slugify } from '@tianwenh/utils/string';
 import { pick } from '@tianwenh/utils/object';
 
 export interface Frontmatter {
@@ -17,8 +16,7 @@ export interface Frontmatter {
   [key: string]: unknown;
 }
 export interface PageMetadata {
-  filepath: string;
-  slug: string;
+  routepath: string;
   frontmatter: Frontmatter;
   component: ComponentType<{
     components: Partial<
@@ -28,7 +26,7 @@ export interface PageMetadata {
   }>;
 }
 export interface PageQueryData {
-  slug: string;
+  routepath: string;
   content: string;
 }
 
@@ -43,7 +41,8 @@ export interface PageOptions {
 const MODULE_NAME = '@pages';
 const QUERY_MODULE_NAME = `${MODULE_NAME}/query`;
 
-function slugifyFilepath(filepath: string, basepath: string): string {
+// Drop extension, basepath, `index`.
+function getRoutepath(filepath: string, basepath: string): string {
   const subpath = filepath.replace(basepath, '');
   const parsed = path.parse(subpath);
   // Filename or its dir name if filename is just 'index'.
@@ -54,8 +53,8 @@ function slugifyFilepath(filepath: string, basepath: string): string {
 }
 
 interface PageData {
+  routepath: string;
   filepath: string;
-  slug: string;
   frontmatter: Frontmatter;
   content: string;
 }
@@ -65,10 +64,14 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
       const filepaths = await fg(path.resolve(glob.basepath, glob.filePattern));
       return Promise.all(
         filepaths.map(async (filepath) => {
-          const slug = slugifyFilepath(filepath, glob.basepath);
+          const routepath = getRoutepath(filepath, glob.basepath);
           const content = await fs.readFile(filepath, 'utf-8');
           const fm = matter(content);
-          const title = fm.data['title'] ?? slugify(slug);
+          const title = fm.data['title'];
+          // TODO: use assert or cast lib.
+          if (!title) {
+            throw Error('Frontmatter title must be set');
+          }
           const subtitle = fm.data['subtitle'] ?? 'unknown subtitle';
           const date = fm.data['date'] ?? 'unknown date';
           const tags = fm.data['tags'] ?? [];
@@ -83,7 +86,7 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
             only,
             hide,
           };
-          return { filepath, content, slug, frontmatter };
+          return { filepath, content, routepath, frontmatter };
         })
       );
     })
@@ -98,15 +101,15 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
 // generate script that exports list of page metadata
 async function generatePageMetadata(options: PageOptions): Promise<string> {
   const ms = await loadPages(options);
+  const componentImports = ms
+    .map((m, i) => `import Component${i} from '${m.filepath}';`)
+    .join('\n');
   const metadata: Omit<PageMetadata, 'component'>[] = ms.map((m) => {
-    return pick(m, 'filepath', 'slug', 'frontmatter');
+    return pick(m, 'routepath', 'frontmatter');
   });
   const metadataWithComponent = metadata
     .map((m, i) => `{"component": Component${i},${JSON.stringify(m).slice(1)}`)
     .join(',');
-  const componentImports = metadata
-    .map((m, i) => `import Component${i} from '${m.filepath}';`)
-    .join('\n');
 
   console.log(`${MODULE_NAME} loaded: ${metadata.length}`);
 
@@ -119,7 +122,9 @@ export default [${metadataWithComponent}];
 // generate script that exports list of page raw conent for search
 async function generatePageQuerydata(options: PageOptions): Promise<string> {
   const ms = await loadPages(options);
-  const metadata: PageQueryData[] = ms.map((m) => pick(m, 'slug', 'content'));
+  const metadata: PageQueryData[] = ms.map((m) =>
+    pick(m, 'routepath', 'content')
+  );
 
   console.log(`${QUERY_MODULE_NAME} loaded: ${metadata.length}`);
 

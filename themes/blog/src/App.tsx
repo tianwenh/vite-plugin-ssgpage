@@ -42,8 +42,8 @@ export const App: React.FC<Props> = (props) => {
         {pages.map((page) => {
           return (
             <Route
-              key={page.slug}
-              path={`/${page.slug}`}
+              key={page.routepath}
+              path={`/${page.routepath}`}
               element={<Page page={page}></Page>}
             ></Route>
           );
