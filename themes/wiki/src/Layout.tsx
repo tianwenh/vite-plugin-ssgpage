@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import React, { FormEvent, useEffect, useMemo, useState } from 'react';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { DarkModeToggle } from '@tianwenh/utils/react/DarkModeToggle';
 import { className } from '@tianwenh/utils/string';
+import type {
+  PageMetadata,
+  PageQueryData,
+} from '@tianwenh/vite-plugin-ssgpage';
 
 interface Props {
   home: string;
+  pages: PageMetadata[];
+  loadPageQuery?: () => Promise<PageQueryData[]>;
 }
 
 const BurgerIcon = () => (
@@ -55,6 +61,31 @@ const SearchIcon = () => (
   </svg>
 );
 
+interface File {
+  name: string;
+  routepath: string;
+}
+class Folder {
+  readonly folders: Record<string, Folder> = {};
+  readonly files: File[] = [];
+  constructor(paths: string[] = []) {
+    for (const path of paths) {
+      this.addPath(path.split('/'), path);
+    }
+  }
+  addPath(subpaths: string[], file: string) {
+    if (subpaths.length === 1) {
+      this.files.push({ name: subpaths[0], routepath: file });
+    } else {
+      const [subpath, ...rest] = subpaths;
+      if (!this.folders[subpath]) {
+        this.folders[subpath] = new Folder();
+      }
+      this.folders[subpath].addPath(rest, file);
+    }
+  }
+}
+
 // Container of all pages.
 export const Layout: React.FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,10 +93,20 @@ export const Layout: React.FC<Props> = (props) => {
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
-  // TODO: refactor ssg, remove filepath in pages
-  // TODO: sidebar render structure
-  // TODO: sidebar search
-  // TODO: wikilink
+  const folder: Folder = useMemo(() => {
+    const routepaths = props.pages.map((page) => page.routepath);
+    return new Folder(routepaths);
+  }, [props.pages]);
+
+  const searchInput = (event: FormEvent<HTMLInputElement>) => {
+    const input = event.currentTarget.value;
+    props.loadPageQuery?.().then((pages) => {
+      const activePages = pages.filter((page) => page.content.includes(input));
+      console.log(input, activePages);
+      // TODO: render result
+    });
+  };
+
   return (
     <div className="layout-container">
       <main className="main-container">
@@ -100,76 +141,59 @@ export const Layout: React.FC<Props> = (props) => {
             aria-label="Search"
             placeholder="Search..."
             type="text"
+            onChange={searchInput}
           />
         </div>
         <div className="aside-content">
-          <ul>
-            <li>
-              <a href="google.com" className="arrow open active">
-                Folder 1
-              </a>
-              <ul>
-                <li>File 1</li>
-                <li>File 2</li>
-                <li>
-                  <a className="arrow open">Folder 1</a>
-                  <ul>
-                    <li>File 1</li>
-                    <li>File 2</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <div>Folder 2</div>
-              <ul>
-                <li>File 1</li>
-                <li>File 2</li>
-                <li>File 3</li>
-              </ul>
-            </li>
-            <li>
-              <div>Folder 3</div>
-              <ul>
-                <li>File 1</li>
-                <li>File 2</li>
-                <li>File 3</li>
-              </ul>
-            </li>
-            <li>
-              <div>Folder 4</div>
-              <ul>
-                <li>File 1</li>
-                <li>File 2</li>
-                <li>File 3</li>
-              </ul>
-            </li>
-            <li>
-              <a>Folder 5</a>
-            </li>
-            <li>
-              <div>Folder 6</div>
-            </li>
-            <li>
-              <div>Folder 7</div>
-              <ul>
-                <li>File 1</li>
-                <li>File 2</li>
-                <li>File 3</li>
-              </ul>
-            </li>
-            <li>
-              <a>File index1</a>
-            </li>
-            <li>
-              <div>File index2</div>
-            </li>
-            <li>
-              <div>File index3</div>
-            </li>
-          </ul>
+          <FolderList folder={folder} />
         </div>
       </aside>
     </div>
+  );
+};
+
+interface FolderListProps {
+  folder: Folder;
+  name?: string;
+}
+
+const FolderList: React.FC<FolderListProps> = (props) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const head = props.name && (
+    <span
+      onClick={() => setIsOpen(!isOpen)}
+      className={className({ arrow: true, open: isOpen })}
+    >
+      {props.name}
+    </span>
+  );
+  const body = (!head || isOpen) && (
+    <ul>
+      {Object.entries(props.folder.folders).map(([subpath, folder]) => {
+        return (
+          <li key={subpath}>
+            <FolderList folder={folder} name={subpath} />
+          </li>
+        );
+      })}
+      {props.folder.files.map((file) => {
+        return (
+          <li key={file.name}>
+            <NavLink
+              to={`/${file.routepath}`}
+              className={({ isActive }) => className({ active: isActive })}
+            >
+              {file.name}
+            </NavLink>
+          </li>
+        );
+      })}
+    </ul>
+  );
+  return (
+    <>
+      {head}
+      {body}
+    </>
   );
 };

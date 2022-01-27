@@ -240,6 +240,7 @@ a.header-anchor {
   background-color: var(--color-background-secondary);
   box-shadow: 0 1px 1px 1px var(--color-shadow);
   transition: transform 200ms linear;
+  height: 100vh;
 }
 
 .aside-container:hover {
@@ -297,17 +298,19 @@ a.header-anchor {
   border-left: 1px solid var(--color-border);
 }
 
-.aside-content a {
-  color: var(--color-text);
-}
-
-.aside-content a.arrow {
+.aside-content span.arrow {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
 }
 
-.aside-content a.arrow::after {
+.aside-content span.arrow:hover {
+  color: var(--color-primary);
+}
+
+.aside-content span.arrow::after {
   content: '';
   display: inline-block;
   width: var(--spacing-2);
@@ -318,8 +321,12 @@ a.header-anchor {
   margin-right: var(--spacing-2);
 }
 
-.aside-content a.arrow.open::after {
+.aside-content span.arrow.open::after {
   transform: rotate(-45deg);
+}
+
+.aside-content a {
+  color: var(--color-text);
 }
 
 .aside-content a.active,
@@ -371,6 +378,7 @@ svg {
   padding: var(--spacing-3);
   border: 0;
   outline: none;
+  color: var(--color-text);
   background-color: var(--color-background-secondary);
   caret-color: var(--color-text);
 }

@@ -20,16 +20,15 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
-// TODO: implement loadPageQuery for search
+// TODO: custom home page README.md etc
+// TODO: wikilink
+
 interface Props {
   pages: PageMetadata[];
   home: string;
   loadPageQuery?: () => Promise<PageQueryData[]>;
 }
 export const App: React.FC<Props> = (props) => {
-  props.loadPageQuery?.().then((v) => {
-    console.log('???', v, props.pages);
-  });
   const pages = useMemo(() => {
     return props.pages.sort(
       (a, b) =>
@@ -43,7 +42,16 @@ export const App: React.FC<Props> = (props) => {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout home={props.home} />}>
+      <Route
+        path="/"
+        element={
+          <Layout
+            home={props.home}
+            pages={pages}
+            loadPageQuery={props.loadPageQuery}
+          />
+        }
+      >
         <Route index element={<Pages pages={pages} />}></Route>
         <Route path="/tags" element={<Tags pages={pages} />}></Route>
         <Route path="/tags/:tagSlug" element={<Tags pages={pages} />}></Route>
