@@ -1,6 +1,6 @@
 {
   "name": "@tianwenh/ssgpage-theme-blog",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Blog theme for vite ssgpage plugin",
   "repository": {
     "type": "git",

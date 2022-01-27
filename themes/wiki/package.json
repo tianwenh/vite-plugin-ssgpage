@@ -1,6 +1,6 @@
 {
   "name": "@tianwenh/ssgpage-theme-wiki",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Wiki theme for vite ssgpage plugin",
   "repository": {
     "type": "git",

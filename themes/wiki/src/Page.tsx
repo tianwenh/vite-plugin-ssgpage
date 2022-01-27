@@ -11,7 +11,9 @@ interface Props {
 
 // Show page brief
 export const PageMeta: React.FC<Props> = (props) => {
-  const date = new Date(props.page.frontmatter.date).toLocaleDateString();
+  const { date, subtitle } = props.page.frontmatter;
+  const dateTime = date ? new Date(date).toLocaleDateString() : '';
+
   return (
     <>
       <h2 className="page-title">
@@ -19,11 +21,13 @@ export const PageMeta: React.FC<Props> = (props) => {
           {props.page.frontmatter.title}
         </Link>
       </h2>
-      <p className="page-subtitle">{props.page.frontmatter.subtitle}</p>
+      {subtitle && <p className="page-subtitle">{subtitle}</p>}
       <small>
-        <time dateTime={date} className="page-info">
-          {date}
-        </time>
+        {dateTime && (
+          <time dateTime={dateTime} className="page-info">
+            {dateTime}
+          </time>
+        )}
         {props.page.frontmatter.tags.map((tag) => {
           return <Tag key={tag} tag={tag} className="page-info"></Tag>;
         })}

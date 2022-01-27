@@ -85,6 +85,13 @@ class Folder {
     }
   }
 }
+interface SearchResult {
+  search: string;
+  pages: Array<{
+    page: PageQueryData;
+    index: number;
+  }>;
+}
 
 // Container of all pages.
 export const Layout: React.FC<Props> = (props) => {
@@ -93,18 +100,31 @@ export const Layout: React.FC<Props> = (props) => {
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
+
   const folder: Folder = useMemo(() => {
     const routepaths = props.pages.map((page) => page.routepath);
     return new Folder(routepaths);
   }, [props.pages]);
 
+  const [searchResult, setSearchResult] = useState<SearchResult>();
+  // TODO: consider debounce.
   const searchInput = (event: FormEvent<HTMLInputElement>) => {
-    const input = event.currentTarget.value;
-    props.loadPageQuery?.().then((pages) => {
-      const activePages = pages.filter((page) => page.content.includes(input));
-      console.log(input, activePages);
-      // TODO: render result
-    });
+    const search = event.currentTarget.value;
+    if (!search) {
+      setSearchResult(undefined);
+    } else {
+      props.loadPageQuery?.().then((pages) => {
+        const activePages = pages
+          .map((page) => {
+            const index = page.content
+              .toLowerCase()
+              .indexOf(search.toLowerCase());
+            return { page, index };
+          })
+          .filter((p) => p.index !== -1);
+        setSearchResult({ search, pages: activePages });
+      });
+    }
   };
 
   return (
@@ -145,11 +165,44 @@ export const Layout: React.FC<Props> = (props) => {
           />
         </div>
         <div className="aside-content">
-          <FolderList folder={folder} />
+          {searchResult ? (
+            <SearchResultList result={searchResult} />
+          ) : (
+            <FolderList folder={folder} />
+          )}
         </div>
       </aside>
     </div>
   );
+};
+
+interface SearchResultListProps {
+  result: SearchResult;
+}
+
+const SearchResultList: React.FC<SearchResultListProps> = (props) => {
+  const search = props.result.search.toLowerCase();
+  const pages = props.result.pages.map(({ page, index }) => {
+    const range = 50;
+    const matchWord = page.content.slice(index, index + search.length);
+    const prevText = page.content.slice(index - range, index);
+    const afterText = page.content.slice(
+      index + search.length,
+      index + search.length + range
+    );
+
+    return (
+      <ul key={page.routepath}>
+        <Link to={`/${page.routepath}`}>{page.routepath}</Link>
+        <div className="search-result">
+          ...{prevText}
+          <strong>{matchWord}</strong>
+          {afterText}...
+        </div>
+      </ul>
+    );
+  });
+  return <ul>{pages}</ul>;
 };
 
 interface FolderListProps {

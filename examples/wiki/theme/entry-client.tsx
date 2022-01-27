@@ -20,7 +20,12 @@ async function loadPageQuery(): Promise<PageQueryData[]> {
 render(
   <React.StrictMode>
     <BrowserRouter>
-      <App pages={pages} home="HTWiki" loadPageQuery={loadPageQuery} />
+      <App
+        pages={pages}
+        home="HTWiki"
+        loadPageQuery={loadPageQuery}
+        indexRoute="README"
+      />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('app')

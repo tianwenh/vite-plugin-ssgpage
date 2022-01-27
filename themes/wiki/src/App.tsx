@@ -20,15 +20,18 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
-// TODO: custom home page README.md etc
 // TODO: wikilink
 
 interface Props {
   pages: PageMetadata[];
   home: string;
+  indexRoute?: string;
   loadPageQuery?: () => Promise<PageQueryData[]>;
 }
 export const App: React.FC<Props> = (props) => {
+  useScrollToTop();
+  useScrollToAnchor();
+
   const pages = useMemo(() => {
     return props.pages.sort(
       (a, b) =>
@@ -36,9 +39,10 @@ export const App: React.FC<Props> = (props) => {
         new Date(a.frontmatter.date).getTime()
     );
   }, [props.pages]);
-
-  useScrollToTop();
-  useScrollToAnchor();
+  const indexElement = useMemo(() => {
+    const page = pages.find((page) => page.routepath === props.indexRoute);
+    return page ? <Page page={page}></Page> : <Pages pages={pages} />;
+  }, [pages, props.indexRoute]);
 
   return (
     <Routes>
@@ -52,7 +56,7 @@ export const App: React.FC<Props> = (props) => {
           />
         }
       >
-        <Route index element={<Pages pages={pages} />}></Route>
+        <Route index element={indexElement}></Route>
         <Route path="/tags" element={<Tags pages={pages} />}></Route>
         <Route path="/tags/:tagSlug" element={<Tags pages={pages} />}></Route>
         {pages.map((page) => {

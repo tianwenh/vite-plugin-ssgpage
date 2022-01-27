@@ -67,13 +67,9 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
           const routepath = getRoutepath(filepath, glob.basepath);
           const content = await fs.readFile(filepath, 'utf-8');
           const fm = matter(content);
-          const title = fm.data['title'];
-          // TODO: use assert or cast lib.
-          if (!title) {
-            throw Error('Frontmatter title must be set');
-          }
-          const subtitle = fm.data['subtitle'] ?? 'unknown subtitle';
-          const date = fm.data['date'] ?? 'unknown date';
+          const title = fm.data['title'] ?? routepath;
+          const subtitle = fm.data['subtitle'];
+          const date = fm.data['date'];
           const tags = fm.data['tags'] ?? [];
           const only = fm.data['only'] ?? false;
           const hide = fm.data['hide'] ?? false;

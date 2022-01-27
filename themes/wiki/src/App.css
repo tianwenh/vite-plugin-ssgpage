@@ -303,7 +303,6 @@ a.header-anchor {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  user-select: none;
 }
 
 .aside-content span.arrow:hover {
@@ -326,6 +325,7 @@ a.header-anchor {
 }
 
 .aside-content a {
+  display: block;
   color: var(--color-text);
 }
 
@@ -381,6 +381,11 @@ svg {
   color: var(--color-text);
   background-color: var(--color-background-secondary);
   caret-color: var(--color-text);
+}
+
+.search-result {
+  font-style: italic;
+  color: var(--color-text-light);
 }
 
 .page-title {
