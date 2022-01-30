@@ -138,6 +138,7 @@ export const Layout: React.FC<Props> = (props) => {
             <BurgerIcon />
           </button>
           <Link to="/">{props.home}</Link>
+          <DarkModeToggle className="dark-toggle"></DarkModeToggle>
         </h3>
         <Outlet />
       </main>

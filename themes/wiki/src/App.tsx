@@ -21,6 +21,7 @@ if (typeof window !== 'undefined') {
 }
 
 // TODO: wikilink
+// TODO: file order
 
 interface Props {
   pages: PageMetadata[];

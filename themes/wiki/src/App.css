@@ -318,6 +318,7 @@ a.header-anchor {
   border-left: 3px solid currentColor;
   transform: rotate(45deg);
   margin-right: var(--spacing-2);
+  transition: transform 200ms linear;
 }
 
 .aside-content span.arrow.open::after {
@@ -386,6 +387,9 @@ svg {
 .search-result {
   font-style: italic;
   color: var(--color-text-light);
+  margin-top: var(--spacing-2);
+  padding: 0 var(--spacing-2);
+  border-left: 1px solid var(--color-border);
 }
 
 .page-title {
