@@ -11,6 +11,7 @@ export interface Frontmatter {
   subtitle: string;
   date: string;
   tags: string[];
+  order: number;
   only: boolean;
   hide: boolean;
   [key: string]: unknown;
@@ -71,6 +72,7 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
           const subtitle = fm.data['subtitle'];
           const date = fm.data['date'];
           const tags = fm.data['tags'] ?? [];
+          const order = fm.data['order'] ?? 0;
           const only = fm.data['only'] ?? false;
           const hide = fm.data['hide'] ?? false;
           const frontmatter: Frontmatter = {
@@ -79,6 +81,7 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
             tags,
             date,
             subtitle,
+            order,
             only,
             hide,
           };

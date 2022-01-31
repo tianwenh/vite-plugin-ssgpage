@@ -20,8 +20,7 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
-// TODO: wikilink
-// TODO: file order
+// TODO: support Links and Backlinks in pages?
 
 interface Props {
   pages: PageMetadata[];
@@ -34,11 +33,19 @@ export const App: React.FC<Props> = (props) => {
   useScrollToAnchor();
 
   const pages = useMemo(() => {
-    return props.pages.sort(
-      (a, b) =>
+    // TODO: consider sort this in pages.
+    return props.pages.sort((a, b) => {
+      // Put order 0 last
+      const aOrder = a.frontmatter.order || 9999;
+      const bOrder = b.frontmatter.order || 9999;
+      if (aOrder !== bOrder) {
+        return aOrder - bOrder;
+      }
+      return (
         new Date(b.frontmatter.date).getTime() -
         new Date(a.frontmatter.date).getTime()
-    );
+      );
+    });
   }, [props.pages]);
   const indexElement = useMemo(() => {
     const page = pages.find((page) => page.routepath === props.indexRoute);

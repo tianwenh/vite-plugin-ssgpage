@@ -9,6 +9,8 @@
   --width-10xl: 90rem;
   --width-full: 100%;
 
+  --height-vh-full: 100vh;
+
   --spacing-0: 0;
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
@@ -231,7 +233,7 @@ a.header-anchor {
   transform: translateX(-100%);
   position: fixed;
   top: var(--spacing-0);
-  max-height: 100vh;
+  max-height: var(--height-vh-full);
   min-width: var(--width-xs);
   width: var(--width-xs);
   padding: var(--spacing-10) var(--spacing-5);
@@ -240,7 +242,7 @@ a.header-anchor {
   background-color: var(--color-background-secondary);
   box-shadow: 0 1px 1px 1px var(--color-shadow);
   transition: transform 200ms linear;
-  height: 100vh;
+  height: var(--height-vh-full);
 }
 
 .aside-container:hover {
@@ -250,7 +252,7 @@ a.header-anchor {
 
 .aside-container.open {
   transform: none;
-  width: 100%;
+  width: var(--width-full);
 }
 
 @media (min-width: 56em) {

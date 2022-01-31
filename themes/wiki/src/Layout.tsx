@@ -61,27 +61,23 @@ const SearchIcon = () => (
   </svg>
 );
 
-interface File {
-  name: string;
-  routepath: string;
-}
 class Folder {
   readonly folders: Record<string, Folder> = {};
-  readonly files: File[] = [];
-  constructor(paths: string[] = []) {
-    for (const path of paths) {
-      this.addPath(path.split('/'), path);
+  readonly files: PageMetadata[] = [];
+  constructor(pages: PageMetadata[] = []) {
+    for (const page of pages) {
+      this.addPath(page.routepath.split('/'), page);
     }
   }
-  addPath(subpaths: string[], file: string) {
+  addPath(subpaths: string[], page: PageMetadata) {
     if (subpaths.length === 1) {
-      this.files.push({ name: subpaths[0], routepath: file });
+      this.files.push(page);
     } else {
       const [subpath, ...rest] = subpaths;
       if (!this.folders[subpath]) {
         this.folders[subpath] = new Folder();
       }
-      this.folders[subpath].addPath(rest, file);
+      this.folders[subpath].addPath(rest, page);
     }
   }
 }
@@ -101,10 +97,7 @@ export const Layout: React.FC<Props> = (props) => {
     setIsOpen(false);
   }, [location]);
 
-  const folder: Folder = useMemo(() => {
-    const routepaths = props.pages.map((page) => page.routepath);
-    return new Folder(routepaths);
-  }, [props.pages]);
+  const folder: Folder = useMemo(() => new Folder(props.pages), [props.pages]);
 
   const [searchResult, setSearchResult] = useState<SearchResult>();
   // TODO: consider debounce.
@@ -232,12 +225,12 @@ const FolderList: React.FC<FolderListProps> = (props) => {
       })}
       {props.folder.files.map((file) => {
         return (
-          <li key={file.name}>
+          <li key={file.routepath}>
             <NavLink
               to={`/${file.routepath}`}
               className={({ isActive }) => className({ active: isActive })}
             >
-              {file.name}
+              {file.frontmatter.title}
             </NavLink>
           </li>
         );
