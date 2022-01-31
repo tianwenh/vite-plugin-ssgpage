@@ -20,7 +20,7 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
-// TODO: support Links and Backlinks in pages?
+// TODO: make global cli: TS challenge, vitepress
 
 interface Props {
   pages: PageMetadata[];
@@ -33,7 +33,7 @@ export const App: React.FC<Props> = (props) => {
   useScrollToAnchor();
 
   const pages = useMemo(() => {
-    // TODO: consider sort this in pages.
+    // TODO: consider sort this in @pages.
     return props.pages.sort((a, b) => {
       // Put order 0 last
       const aOrder = a.frontmatter.order || 9999;

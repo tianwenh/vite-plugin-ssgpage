@@ -36,6 +36,39 @@ export const PageMeta: React.FC<Props> = (props) => {
   );
 };
 
+const PageLinks: React.FC<Props> = (props) => {
+  const { links, backlinks } = props.page.frontmatter;
+  if (links.length + backlinks.length === 0) {
+    return <></>;
+  }
+
+  const toUl = (links: string[], title: string) => {
+    if (links.length === 0) {
+      return <></>;
+    }
+    return (
+      <>
+        <h2>{title}</h2>
+        <ul>
+          {links.map((link) => {
+            return (
+              <li key={link}>
+                <Link to={`/${link}`}>{link}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    );
+  };
+  return (
+    <>
+      <hr />
+      {toUl(links, 'Links')}
+      {toUl(backlinks, 'Backlinks')}
+    </>
+  );
+};
 const MDX_COMPONENTS = {
   a: MdxLink,
 };
@@ -49,6 +82,7 @@ export const Page: React.FC<Props> = (props) => {
       </header>
       <hr />
       <props.page.component components={MDX_COMPONENTS} />
+      <PageLinks page={props.page} />
       <hr />
       <footer>EOF</footer>
     </>

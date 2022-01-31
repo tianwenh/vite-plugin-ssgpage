@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 import { pick } from '@tianwenh/utils/object';
+import { groupBy } from '@tianwenh/utils/array';
 
 export interface Frontmatter {
   title: string;
@@ -14,6 +15,8 @@ export interface Frontmatter {
   order: number;
   only: boolean;
   hide: boolean;
+  links: string[];
+  backlinks: string[];
   [key: string]: unknown;
 }
 export interface PageMetadata {
@@ -53,6 +56,38 @@ function getRoutepath(filepath: string, basepath: string): string {
   return slug;
 }
 
+function getLinks(content: string): string[] {
+  function getLink(line: string): string {
+    const result = line.match(/^\[.+]:\s(.+)\.md/)?.[1];
+    // TODO: consider use assert tool.
+    if (!result) {
+      throw new Error('Invalid wiki link');
+    }
+    return result;
+  }
+
+  const links = content
+    .split(/\[\/\/begin]:.+/)[1]
+    ?.split(/\[\/\/end]:/)[0]
+    ?.split('\n')
+    .filter((line) => !!line)
+    .map(getLink);
+  return links ?? [];
+}
+function fillBacklinks(pages: PageData[]): PageData[] {
+  const backlinkByPage = groupBy(pages, (page) => page.frontmatter.links);
+  return pages.map((page) => {
+    const backlinks =
+      backlinkByPage[page.routepath]?.map((p) => p.routepath) ?? [];
+    return {
+      ...page,
+      frontmatter: {
+        ...page.frontmatter,
+        backlinks,
+      },
+    };
+  });
+}
 interface PageData {
   routepath: string;
   filepath: string;
@@ -75,6 +110,7 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
           const order = fm.data['order'] ?? 0;
           const only = fm.data['only'] ?? false;
           const hide = fm.data['hide'] ?? false;
+          const links = getLinks(content);
           const frontmatter: Frontmatter = {
             ...fm.data,
             title,
@@ -84,19 +120,22 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
             order,
             only,
             hide,
+            links,
+            backlinks: [],
           };
           return { filepath, content, routepath, frontmatter };
         })
       );
     })
   );
-  const meta = ms.flat();
+  const meta = fillBacklinks(ms.flat());
   // For dev mode, only load marked posts.
   const onlymeta = meta.filter((m) => m.frontmatter.only);
   const onlyOrAll = onlymeta.length === 0 ? meta : onlymeta;
   const metadata = onlyOrAll.filter((m) => !m.frontmatter.hide);
   return metadata;
 }
+
 // generate script that exports list of page metadata
 async function generatePageMetadata(options: PageOptions): Promise<string> {
   const ms = await loadPages(options);
