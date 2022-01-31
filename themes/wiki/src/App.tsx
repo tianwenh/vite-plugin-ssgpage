@@ -20,7 +20,7 @@ if (typeof window !== 'undefined') {
   restoreTheme();
 }
 
-// TODO: make global cli: TS challenge, vitepress
+// TODO: make global cli
 
 interface Props {
   pages: PageMetadata[];

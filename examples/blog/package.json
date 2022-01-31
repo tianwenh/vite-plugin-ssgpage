@@ -6,7 +6,7 @@
     "clean": "rm -rf ./dist",
     "check": "tsc -w",
     "dev": "vite",
-    "prebuild": "npm run clean && tsc && npm run lint",
+    "prebuild": "npm run clean & tsc & npm run lint",
     "build:nossg": "npm run prebuild && NO_SSG=1 vite build",
     "build": "vite build",
     "serve": "vite preview",
