@@ -6,6 +6,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { pick } from '@tianwenh/utils/object';
 import { groupBy } from '@tianwenh/utils/array';
+import { assert } from '@tianwenh/utils/check';
 
 export interface Frontmatter {
   title: string;
@@ -59,10 +60,7 @@ function getRoutepath(filepath: string, basepath: string): string {
 function getLinks(content: string): string[] {
   function getLink(line: string): string {
     const result = line.match(/^\[.+]:\s(.+)\.md/)?.[1];
-    // TODO: consider use assert tool.
-    if (!result) {
-      throw new Error('Invalid wiki link');
-    }
+    assert(result);
     return result;
   }
 
@@ -88,6 +86,11 @@ function fillBacklinks(pages: PageData[]): PageData[] {
     };
   });
 }
+function getTitle(routepath: string): string {
+  const paths = routepath.split('/');
+  return paths[paths.length - 1];
+}
+
 interface PageData {
   routepath: string;
   filepath: string;
@@ -103,7 +106,7 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
           const routepath = getRoutepath(filepath, glob.basepath);
           const content = await fs.readFile(filepath, 'utf-8');
           const fm = matter(content);
-          const title = fm.data['title'] ?? routepath;
+          const title = fm.data['title'] ?? getTitle(routepath);
           const subtitle = fm.data['subtitle'];
           const date = fm.data['date'];
           const tags = fm.data['tags'] ?? [];
