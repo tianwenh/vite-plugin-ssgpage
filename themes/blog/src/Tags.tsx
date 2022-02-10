@@ -29,7 +29,9 @@ export const Tags: React.FC<Props> = (props) => {
     );
   }, [props.pages]);
   const pagesByTagSlug = useMemo(() => {
-    return groupBy(props.pages, (page) => page.frontmatter.tags.map(slugify));
+    return groupBy(props.pages, (page) =>
+      page.frontmatter.tags.map((tag) => slugify(tag))
+    );
   }, [props.pages]);
   const { tagSlug } = useParams<{ tagSlug: string }>();
   return (

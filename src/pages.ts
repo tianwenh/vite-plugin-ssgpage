@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { FC } from 'react';
 import type { Plugin } from 'vite';
 import fg from 'fast-glob';
 import fs from 'fs/promises';
@@ -7,7 +7,13 @@ import matter from 'gray-matter';
 import { pick } from '@tianwenh/utils/object';
 import { groupBy } from '@tianwenh/utils/array';
 import { assert } from '@tianwenh/utils/check';
+import { slugify } from '@tianwenh/utils/string';
 
+export interface Toc {
+  content: string;
+  slug: string;
+  level: number;
+}
 export interface Frontmatter {
   title: string;
   subtitle: string;
@@ -23,11 +29,10 @@ export interface Frontmatter {
 export interface PageMetadata {
   routepath: string;
   frontmatter: Frontmatter;
-  component: ComponentType<{
-    components: Partial<
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      Record<keyof HTMLElementTagNameMap, ComponentType<any>>
-    >;
+  toc: Toc[];
+  // MDX `MDXContent` type is broken.
+  component: FC<{
+    components: Partial<Record<keyof HTMLElementTagNameMap, FC<unknown>>>;
   }>;
 }
 export interface PageQueryData {
@@ -55,6 +60,20 @@ function getRoutepath(filepath: string, basepath: string): string {
     .resolve(parsed.dir, parsed.name === 'index' ? '' : parsed.name)
     .slice(1);
   return slug;
+}
+
+function getToc(content: string): Toc[] {
+  const headings = content
+    .split('\n')
+    .filter((line) => line.startsWith('#'))
+    .map((line) => {
+      const level = line.match(/^#+/)?.[0].length;
+      assert(level);
+      const content = line.slice(level + 1);
+      const slug = slugify(content);
+      return { content, slug, level };
+    });
+  return headings;
 }
 
 function getLinks(content: string): string[] {
@@ -96,6 +115,7 @@ interface PageData {
   filepath: string;
   frontmatter: Frontmatter;
   content: string;
+  toc: Toc[];
 }
 async function loadPages(options: PageOptions): Promise<PageData[]> {
   const ms: PageData[][] = await Promise.all(
@@ -126,7 +146,8 @@ async function loadPages(options: PageOptions): Promise<PageData[]> {
             links,
             backlinks: [],
           };
-          return { filepath, content, routepath, frontmatter };
+          const toc = getToc(content);
+          return { filepath, content, routepath, frontmatter, toc };
         })
       );
     })
@@ -146,7 +167,7 @@ async function generatePageMetadata(options: PageOptions): Promise<string> {
     .map((m, i) => `import Component${i} from '${m.filepath}';`)
     .join('\n');
   const metadata: Omit<PageMetadata, 'component'>[] = ms.map((m) => {
-    return pick(m, 'routepath', 'frontmatter');
+    return pick(m, 'routepath', 'frontmatter', 'toc');
   });
   const metadataWithComponent = metadata
     .map((m, i) => `{"component": Component${i},${JSON.stringify(m).slice(1)}`)
